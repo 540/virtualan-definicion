@@ -1,6 +1,6 @@
 ---
 name: extraer-diseno
-description: Lee el diseño de Figma de CulturApp, rellena mapa-de-pantallas.md (pantallas, flujos, enlace al frame) y propone la lista de casos de uso, creando un casos/<slug>.md por cada uno desde la plantilla. Usar cuando el usuario diga "extrae el diseño", "/extraer-diseno", "monta el mapa de pantallas", "propón los casos", o al empezar el repo o tras cambios en Figma.
+description: Lee el diseño de Figma de CulturApp, rellena diseno/mapa-de-pantallas.md (pantallas, flujos, enlace al frame) y propone la lista de casos de uso, creando un casos/<slug>.md por cada uno desde la plantilla. Usar cuando el usuario diga "extrae el diseño", "/extraer-diseno", "monta el mapa de pantallas", "propón los casos", o al empezar el repo o tras cambios en Figma.
 ---
 
 # Extraer diseño
@@ -17,7 +17,7 @@ Paso 1 del flujo. Convierte el diseño en un mapa de pantallas y en una lista de
 
 No inventes pantallas ni flujos. Lo que no puedas ver, se marca `REVISAR` con la fuente que falta.
 
-## Paso 1: rellenar `mapa-de-pantallas.md`
+## Paso 1: rellenar `diseno/mapa-de-pantallas.md`
 
 Respeta el esqueleto (Panel: Lugares con lista, ficha, puntos, punto y QR, y Administradores; App: Inicio, Explorar, Visita, Cuenta). Para cada pantalla:
 - Nombre y qué muestra (acciones, estados visibles).
@@ -38,7 +38,7 @@ Presenta la lista como tabla: slug, título, producto (panel | app), pantallas i
 
 ## Paso 3: confirmar y crear
 
-**Pide confirmación de la lista antes de crear ficheros.** Con el visto bueno, crea un `casos/<slug>.md` por caso desde `plantilla-caso.md`:
+**Pide confirmación de la lista antes de crear ficheros.** Con el visto bueno, crea la carpeta `casos/` si no existe y un `casos/<slug>.md` por caso desde `herramientas/plantilla-caso.md`:
 - `estado: por-definir`, `producto`, `figma:` con los enlaces de los frames.
 - «Pantallas de Figma implicadas» ya rellena. El resto, tal cual la plantilla.
 - Slug en minúsculas, sin acentos, con guiones. Sin subcarpetas.

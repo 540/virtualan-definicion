@@ -1,0 +1,368 @@
+[
+  {
+    "id": "165-3514",
+    "nombre": "Acceso",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "177-863",
+    "nombre": "Acceso · contraseña incorrecta",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "165-2229",
+    "nombre": "Lista de lugares",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "184-2201",
+    "nombre": "Menú de fila · Acciones del lugar",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "170-752",
+    "nombre": "Modal · confirmar borrado",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "177-960",
+    "nombre": "Tostada · lugar borrado",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "165-2862",
+    "nombre": "Ficha del lugar · Información",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "180-1247",
+    "nombre": "Ficha · Información · euskera",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "180-1542",
+    "nombre": "Nuevo lugar",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "165-2990",
+    "nombre": "Puntos del lugar (pestaña Puntos de interés)",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "165-3297",
+    "nombre": "Punto",
+    "producto": "panel",
+    "captura": true
+  },
+  {
+    "id": "181-1520",
+    "nombre": "Punto · euskera",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "181-2313",
+    "nombre": "Menú · Añadir contenido",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "181-1862",
+    "nombre": "Nuevo punto",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "182-2048",
+    "nombre": "Editor de contenido · Texto",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "182-2366",
+    "nombre": "Editor de contenido · Audio",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "165-2546",
+    "nombre": "Administradores (lista)",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "179-999",
+    "nombre": "Invitar administrador",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "179-1201",
+    "nombre": "Invitación enviada",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "179-1341",
+    "nombre": "Quitar acceso",
+    "producto": "panel",
+    "captura": false
+  },
+  {
+    "id": "330-621",
+    "nombre": "Inicio",
+    "producto": "app",
+    "captura": true
+  },
+  {
+    "id": "311-493",
+    "nombre": "Explorar visitas",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "356-976",
+    "nombre": "Explorar · resultados",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "356-1011",
+    "nombre": "Explorar · sin resultados",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "50-2",
+    "nombre": "Bienvenida",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "61-116",
+    "nombre": "Cambiar idioma",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "227-905",
+    "nombre": "Portada del lugar",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "53-53",
+    "nombre": "Punto de interés · Punto 1 · Castillo de Irurita",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "454-5329",
+    "nombre": "Punto 1 · pestaña Textos",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "454-5446",
+    "nombre": "Punto 1 · pestaña Vídeos",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "516-1056",
+    "nombre": "Punto 1 · pestaña 360º",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "516-1101",
+    "nombre": "Punto 1 · pestaña Imágenes",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "516-1146",
+    "nombre": "Punto 1 · pestaña Antes y después",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "62-573",
+    "nombre": "Punto 2 · Villa medieval de Etxarri Aranatz",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "454-5581",
+    "nombre": "Punto 2 · pestaña Textos",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-1535",
+    "nombre": "Punto 2 · pestaña 360º",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-1613",
+    "nombre": "Punto 2 · pestaña Vídeos",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-1691",
+    "nombre": "Punto 2 · pestaña Imágenes",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-1769",
+    "nombre": "Punto 2 · pestaña Antes y después",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "526-1398",
+    "nombre": "Punto 6 · Torre de Leitza",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-1847",
+    "nombre": "Punto 6 · pestaña Audios",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-1914",
+    "nombre": "Punto 6 · pestaña 360º",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-1988",
+    "nombre": "Punto 6 · pestaña Vídeos",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-2062",
+    "nombre": "Punto 6 · pestaña Imágenes",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "530-2136",
+    "nombre": "Punto 6 · pestaña Antes y después",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "54-72",
+    "nombre": "Audio · Reproductor",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "535-2215",
+    "nombre": "Audio 2",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "54-104",
+    "nombre": "Texto 1 de 4",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "535-2269",
+    "nombre": "Texto 2 de 4",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "535-2284",
+    "nombre": "Texto 3 de 4",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "535-2299",
+    "nombre": "Texto 4 de 4",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "63-254",
+    "nombre": "Vídeo",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "54-140",
+    "nombre": "Antes y después",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "454-5288",
+    "nombre": "Antes y después · pantalla completa",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "63-289",
+    "nombre": "Vista 360",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "63-312",
+    "nombre": "Imagen",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "63-339",
+    "nombre": "Fin de la visita",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "350-993",
+    "nombre": "Ajustes · con cuenta",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "66-397",
+    "nombre": "Sobre la entidad",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "309-16968",
+    "nombre": "Entrar con correo",
+    "producto": "app",
+    "captura": false
+  },
+  {
+    "id": "309-16990",
+    "nombre": "Código de verificación",
+    "producto": "app",
+    "captura": false
+  }
+]

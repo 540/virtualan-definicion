@@ -1,0 +1,403 @@
+<title>User Story Mapping CulturApp</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* Paleta única, clara: el tablero se lee sobre blanco porque las capturas son claras. */
+/* Paleta única, clara. Neutros fríos con matiz azul; azul de marca para el panel, ocre para la app; ámbar para lo pendiente. */
+:root {
+  --bg: #ffffff; --fg: #18212b; --muted: #65717f; --line: #e3e7ec; --accent: #1f4e8c; --warn: #b7791f; --warn-bg: #fff6e5;
+  --panel: #e8f0fa; --panel-fuerte: #1f4e8c; --app: #f6efdc; --app-fuerte: #9a6b0f;
+  --card: #ffffff; --alt: #f7f9fb; --skel: #eef4fc; --on-accent: #ffffff; --ok: #1d7a4b; --ok-bg: #e9f6ee;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); margin: 0; font-family: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 48px; }
+h1, h2 { font-family: "Fraunces", Georgia, "Times New Roman", serif; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+code, .mono { font-family: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.cabecera { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 10px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.cab-fila { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; justify-content: space-between; }
+h1 { font-size: clamp(1.2rem, 3.6vw, 1.7rem); }
+.meta { color: var(--muted); font-size: 0.85rem; margin: 2px 0 0; }
+.contadores { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 8px 0 0; padding: 0; list-style: none; font-variant-numeric: tabular-nums; }
+.contadores li { font-size: 0.82rem; color: var(--muted); }
+.contadores b { font-size: 1.1rem; color: var(--fg); margin-right: 4px; font-family: "Fraunces", Georgia, serif; }
+.filtros { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; margin: 18px 0 12px; }
+.filtro { display: flex; flex-direction: column; gap: 4px; }
+.filtro > span, .filtro legend { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 0; }
+fieldset.filtro { border: 0; padding: 0; margin: 0; min-width: 0; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; font-size: 0.85rem; padding: 7px 14px; border: 0; background: var(--card); color: var(--fg); cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+select { font: inherit; font-size: 0.9rem; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); min-height: 36px; max-width: 100%; }
+.interruptor { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem; min-height: 36px; }
+.interruptor input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.interruptor .pista { width: 38px; height: 22px; border-radius: 11px; background: var(--line); position: relative; transition: background .15s; flex: none; }
+.interruptor .pista::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--card); transition: transform .15s; }
+.interruptor input:checked + .pista { background: var(--warn); }
+.interruptor input:checked + .pista::after { transform: translateX(16px); }
+.interruptor input:focus-visible + .pista { outline: 3px solid var(--accent); outline-offset: 2px; }
+.resumen-filtro { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; margin: 0 0 8px; }
+
+.tablero-marco { border: 1px solid var(--line); border-radius: 12px; overflow: auto; max-height: 80vh; background: var(--bg); -webkit-overflow-scrolling: touch; box-shadow: 0 1px 3px rgba(24, 33, 43, 0.05); }
+.tablero { display: grid; width: max-content; min-width: 100%; }
+.tablero > * { min-width: 0; }
+.th-grupo, .th-act, .th-corner { position: sticky; z-index: 12; }
+.th-grupo { top: 0; height: 36px; display: flex; align-items: center; padding: 0 14px; font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.01em; border-right: 1px solid rgba(255,255,255,0.25); }
+.th-grupo.panel { background: var(--panel-fuerte); color: var(--on-accent); }
+.th-grupo.app { background: var(--app-fuerte); color: var(--on-accent); }
+.th-act { top: 36px; padding: 10px 12px 9px; background: var(--bg); border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); font-size: 0.86rem; font-weight: 600; line-height: 1.25; box-shadow: inset 0 3px 0 var(--line); }
+.th-act .cod { display: flex; align-items: center; gap: 6px; }
+.th-act .ok { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); font-size: 0.7rem; font-weight: 700; line-height: 1; }
+.th-act.panel { background: var(--panel); box-shadow: inset 0 3px 0 var(--panel-fuerte); }
+.th-act.app { background: var(--app); box-shadow: inset 0 3px 0 var(--app-fuerte); }
+.th-act .cod { display: block; font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+.th-corner { top: 0; left: 0; z-index: 20; background: var(--bg); grid-row: 1 / span 2; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); display: flex; align-items: flex-end; padding: 8px 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.th-corte { position: sticky; left: 0; z-index: 10; padding: 14px 12px; background: var(--bg); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 0.82rem; line-height: 1.3; }
+.th-corte .num { display: block; font-family: "Fraunces", Georgia, serif; font-size: 1.9rem; font-weight: 700; line-height: 1; margin-bottom: 6px; color: var(--muted); }
+.th-corte .nom { font-weight: 600; }
+.th-corte .ok { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 0.7rem; font-weight: 600; padding: 3px 8px 3px 6px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); white-space: nowrap; }
+.th-corte .ok::before { content: "\2713"; font-size: 0.75rem; }
+.th-corte .n { display: block; color: var(--muted); font-size: 0.75rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.celda { padding: 10px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; min-height: 56px; }
+.fila-a, .fila-b { background: var(--bg); }
+.celda.fila-a, .celda.fila-b { background: var(--alt); }
+.fila-0 { background: var(--skel); }
+.celda.fila-0 { background: var(--skel); }
+.th-corte.fila-0 { background: var(--skel); }
+.th-corte.fila-0 .num { color: var(--accent); }
+.fila-0.th-corte { box-shadow: inset 3px 0 0 var(--accent); }
+.tarjeta { all: unset; box-sizing: border-box; display: block; cursor: pointer; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px 10px; font-size: 0.8rem; line-height: 1.35; box-shadow: 0 1px 2px rgba(24, 33, 43, 0.05), 0 1px 0 rgba(24, 33, 43, 0.03); transition: box-shadow .12s, border-color .12s; }
+.tarjeta:hover { border-color: var(--accent); box-shadow: 0 3px 10px rgba(31, 78, 140, 0.12); }
+.tarjeta:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tarjeta[aria-expanded="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--panel); }
+.tarjeta.revisar { border-color: var(--line); }
+.tarjeta .txt { display: block; color: var(--fg); font-weight: 500; }
+.tarjeta .pie { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; margin-top: 7px; }
+.tarjeta .slug { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.66rem; color: var(--muted); overflow-wrap: anywhere; }
+.chip { font-size: 0.64rem; font-weight: 600; letter-spacing: 0.02em; padding: 1px 7px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); }
+.vacio { color: var(--muted); font-size: 0.75rem; opacity: 0.7; }
+.tarjeta .mini { display: block; width: calc(100% + 20px); margin: -9px -10px 8px; height: 104px; object-fit: cover; object-position: top; border-radius: 8px 8px 0 0; border-bottom: 1px solid var(--line); background: var(--alt); }
+.tarjeta .mini.alta { object-fit: contain; background: #e9edf2; }
+.galeria { display: flex; flex-direction: column; gap: 14px; margin: 4px 0 0; }
+.galeria figure { margin: 0; }
+.galeria img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 6px; background: var(--alt); }
+.galeria figcaption { font-size: 0.78rem; color: var(--muted); margin-top: 4px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.galeria figcaption a { color: var(--accent); }
+.galeria .sin { font-size: 0.8rem; color: var(--muted); padding: 10px 12px; border: 1px dashed var(--line); border-radius: 6px; }
+.galeria button.ampliar { all: unset; display: block; cursor: zoom-in; width: 100%; }
+.galeria button.ampliar:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.visor { position: fixed; inset: 0; z-index: 80; background: color-mix(in srgb, var(--fg) 88%, transparent); display: flex; flex-direction: column; align-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); overflow: auto; }
+.visor[hidden] { display: none; }
+.visor .barra { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--bg); font-size: 0.9rem; margin-bottom: 12px; flex: none; }
+.visor .barra a { color: var(--bg); }
+.visor .barra button { font: inherit; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.visor img { display: block; max-width: 100%; width: auto; height: auto; border-radius: 6px; background: var(--card); cursor: zoom-out; }
+.visor.real img { max-width: none; }
+
+.detalle { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 100%); z-index: 50; background: var(--card); border-left: 1px solid var(--line); padding: 20px max(16px, env(safe-area-inset-right, 0px)) 24px 20px; overflow-y: auto; box-shadow: -12px 0 32px color-mix(in srgb, var(--fg) 18%, transparent); }
+.detalle[hidden] { display: none; }
+.detalle h2 { font-size: 1.15rem; margin: 6px 0 14px; line-height: 1.25; }
+.detalle dl { margin: 0; }
+.detalle dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 14px; }
+.detalle dd { margin: 3px 0 0; }
+.detalle .aviso { border-left: 4px solid var(--warn); padding: 8px 12px; background: var(--warn-bg); border-radius: 0 6px 6px 0; }
+.detalle .cerrar { position: absolute; top: 12px; right: max(12px, env(safe-area-inset-right, 0px)); font: inherit; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.id-hist { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.78rem; color: var(--muted); }
+
+section.seccion { margin-top: 40px; }
+section.seccion h2 { font-size: 1.3rem; margin-bottom: 12px; }
+ol.pasos { margin: 0; padding-left: 1.4rem; max-width: 70ch; }
+ol.pasos li { margin-bottom: 6px; }
+.nota { color: var(--muted); max-width: 70ch; }
+.tabla-marco { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table.dec { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+table.dec th, table.dec td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.dec th { background: var(--alt); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+table.dec tr:last-child td { border-bottom: 0; }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+@media (max-width: 560px) {
+  .filtros { flex-direction: column; align-items: stretch; }
+  .seg { display: flex; } .seg button { flex: 1; }
+  .tablero-marco { max-height: 70vh; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<header class="cabecera">
+  <div class="cab-fila">
+    <h1>User Story Mapping · CulturApp MVP</h1>
+    <p class="meta">{{META}}</p>
+  </div>
+  <ul class="contadores" aria-label="Resumen">
+    <li><b id="cnt-historias">0</b>historias</li>
+    <li><b id="cnt-actividades">0</b>actividades</li>
+    <li><b id="cnt-casos">0</b>casos propuestos</li>
+    <li><b id="cnt-revisar">0</b>con REVISAR</li>
+  </ul>
+</header>
+
+<main>
+<div class="filtros" role="group" aria-label="Filtros del tablero">
+  <fieldset class="filtro"><legend>Producto</legend>
+    <div class="seg" id="f-producto">
+      <button type="button" id="f-producto-todo" data-v="todo" aria-pressed="true">Todo</button>
+      <button type="button" id="f-producto-panel" data-v="panel" aria-pressed="false">Panel</button>
+      <button type="button" id="f-producto-app" data-v="app" aria-pressed="false">App</button>
+    </div>
+  </fieldset>
+  <label class="filtro" for="f-corte"><span>Corte</span>
+    <select id="f-corte">
+      <option value="todos">Todos los cortes</option>
+{{OPCIONES_CORTES}}
+      <option value="sin">Sin corte / por decidir</option>
+    </select>
+  </label>
+  <label class="interruptor" for="f-revisar"><input type="checkbox" id="f-revisar"><span class="pista" aria-hidden="true"></span>Solo con REVISAR</label>
+  <label class="interruptor" for="f-capturas"><input type="checkbox" id="f-capturas" checked><span class="pista" aria-hidden="true"></span>Mostrar capturas</label>
+</div>
+<p class="resumen-filtro" id="resumen-filtro" aria-live="polite"></p>
+
+<div class="tablero-marco" id="tablero-marco" tabindex="0" role="region" aria-label="Tablero de User Story Mapping, desplazable">
+  <div class="tablero" id="tablero"></div>
+</div>
+
+<section class="seccion" id="skeleton">
+  <h2>Walking skeleton · recorrido exacto</h2>
+  <p class="nota">{{SKELETON_NOTA}}</p>
+  <ol class="pasos">
+{{SKELETON_PASOS}}
+  </ol>
+  <p class="nota">{{SKELETON_FUERA}}</p>
+</section>
+
+<section class="seccion" id="decisiones">
+  <h2>Decisiones pendientes</h2>
+  <div class="tabla-marco"><table class="dec">
+    <thead><tr><th scope="col">Decisión</th><th scope="col">Quién</th><th scope="col">Afecta a</th></tr></thead>
+    <tbody>
+{{DECISIONES}}
+    </tbody>
+  </table></div>
+</section>
+
+<section class="seccion" id="fuera">
+  <h2>Fuera de alcance (fase 2)</h2>
+  <p class="nota">{{FASE2}}</p>
+</section>
+</main>
+
+<footer>
+  {{PIE}}
+</footer>
+
+<div class="visor" id="visor" hidden role="dialog" aria-modal="true" aria-label="Captura ampliada">
+  <div class="barra">
+    <span id="visor-nombre"></span>
+    <span><a id="visor-figma" href="#" target="_blank" rel="noopener">Abrir en Figma</a> · <button type="button" id="visor-tamano">Tamaño real</button> <button type="button" id="visor-cerrar">Cerrar</button></span>
+  </div>
+  <img id="visor-img" src="" alt="">
+</div>
+
+<aside class="detalle" id="detalle" hidden aria-labelledby="det-titulo">
+  <button type="button" class="cerrar" id="det-cerrar">Cerrar</button>
+  <div class="id-hist" id="det-id"></div>
+  <h2 id="det-titulo"></h2>
+  <dl>
+    <dt>Actividad</dt><dd id="det-actividad"></dd>
+    <dt>Corte</dt><dd id="det-corte"></dd>
+    <dt>Pantallas</dt><dd id="det-pantallas"></dd>
+    <dt>Capturas de Figma</dt><dd><div class="galeria" id="det-capturas"></div></dd>
+    <dt>Caso</dt><dd id="det-caso" class="mono"></dd>
+    <dt>REVISAR</dt><dd id="det-revisar"></dd>
+  </dl>
+</aside>
+
+<script type="application/json" id="datos-historias">{{HISTORIAS}}</script>
+<script type="application/json" id="datos-actividades">{{ACTIVIDADES}}</script>
+<script type="application/json" id="datos-frames">{{FRAMES}}</script>
+<script>
+(function () {
+  var historias = JSON.parse(document.getElementById("datos-historias").textContent);
+  var actividades = JSON.parse(document.getElementById("datos-actividades").textContent);
+  var frames = JSON.parse(document.getElementById("datos-frames").textContent);
+  var framePorId = {}; frames.forEach(function (f) { framePorId[f.id] = f; });
+  var FIGMA = "https://www.figma.com/design/1RBvs1NprjX6oR3P76wE99/CulturApp-%C2%B7-Design-system?node-id=";
+  function rutaCaptura(id) { return "capturas/" + id + ".jpg"; }
+  var BACKBONE = {{BACKBONE}};
+  var cortes = [
+{{CORTES}},
+    { id: null, nombre: "Sin corte / por decidir" }
+  ];
+  var estado = { producto: "todo", corte: "todos", revisar: false, capturas: true, abierta: null };
+  var tablero = document.getElementById("tablero");
+  var detalle = document.getElementById("detalle");
+  var ultimoFoco = null;
+
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function nombreAct(c) { for (var i = 0; i < actividades.length; i++) if (actividades[i].codigo === c) return actividades[i]; return null; }
+  function claveCorte(c) { return c === null ? "sin" : String(c); }
+
+  var slugs = {}; historias.forEach(function (h) { if (h.caso) slugs[h.caso] = 1; });
+  document.getElementById("cnt-historias").textContent = historias.length;
+  document.getElementById("cnt-actividades").textContent = actividades.length;
+  document.getElementById("cnt-casos").textContent = Object.keys(slugs).length;
+  document.getElementById("cnt-revisar").textContent = historias.filter(function (h) { return h.revisar; }).length;
+
+  function pasa(h) {
+    var a = nombreAct(h.actividad);
+    if (estado.producto !== "todo" && a.producto !== estado.producto) return false;
+    if (estado.corte !== "todos" && claveCorte(h.corte) !== estado.corte) return false;
+    if (estado.revisar && !h.revisar) return false;
+    return true;
+  }
+
+  function render() {
+    tablero.textContent = "";
+    var acts = actividades.filter(function (a) { return estado.producto === "todo" || a.producto === estado.producto; });
+    var filas = cortes.filter(function (c) { return estado.corte === "todos" || claveCorte(c.id) === estado.corte; });
+    tablero.style.gridTemplateColumns = "150px repeat(" + acts.length + ", 230px)";
+    var corner = el("div", "th-corner", "Corte"); corner.style.gridColumn = "1"; tablero.appendChild(corner);
+    var col = 2;
+    ["panel", "app"].forEach(function (p) {
+      var n = acts.filter(function (a) { return a.producto === p; }).length;
+      if (!n) return;
+      var g = el("div", "th-grupo " + p, p === "panel" ? "Panel · administrador" : "App · visitante");
+      g.style.gridColumn = col + " / span " + n; g.style.gridRow = "1"; tablero.appendChild(g); col += n;
+    });
+    acts.forEach(function (a, i) {
+      var t = el("div", "th-act " + a.producto);
+      t.style.gridColumn = String(i + 2); t.style.gridRow = "2";
+      var cod = el("span", "cod", a.codigo); if (BACKBONE) { var ok = el("span", "ok", "\u2713"); ok.title = "Actividad validada el " + BACKBONE; ok.setAttribute("aria-label", "validada"); cod.appendChild(ok); }
+      t.appendChild(cod); t.appendChild(document.createTextNode(a.nombre));
+      tablero.appendChild(t);
+    });
+    var total = 0;
+    filas.forEach(function (c, fi) {
+      var r = fi + 3;
+      var cls = c.id === 0 ? "fila-0" : (fi % 2 ? "fila-b" : "fila-a");
+      var th = el("div", "th-corte " + cls);
+      th.style.gridColumn = "1"; th.style.gridRow = String(r);
+      th.appendChild(el("span", "num", c.id === null ? "?" : String(c.id)));
+      th.appendChild(el("span", "nom", c.nombre));
+      if (c.validado) { var okc = el("span", "ok", "Validado"); okc.title = "Validado el " + c.validado; th.appendChild(okc); }
+      var nFila = 0;
+      acts.forEach(function (a, i) {
+        var cel = el("div", "celda " + cls + " " + a.producto);
+        cel.style.gridColumn = String(i + 2); cel.style.gridRow = String(r);
+        var hs = historias.filter(function (h) { return h.actividad === a.codigo && h.corte === c.id && pasa(h); });
+        hs.forEach(function (h) {
+          var b = el("button", "tarjeta" + (h.revisar ? " revisar" : ""));
+          b.type = "button"; b.setAttribute("data-id", h.id); b.setAttribute("aria-expanded", estado.abierta === h.id ? "true" : "false");
+          if (estado.capturas && h.frames && h.frames.length) {
+            var f0 = framePorId[h.frames[0]];
+            var img = el("img", "mini" + (a.producto === "app" ? " alta" : ""));
+            img.src = rutaCaptura(h.frames[0]); img.alt = f0 ? f0.nombre : h.frames[0]; img.loading = "lazy";
+            img.addEventListener("error", function () { img.hidden = true; });
+            b.appendChild(img);
+          }
+          b.appendChild(el("span", "txt", h.historia));
+          var pie = el("span", "pie");
+          if (h.caso) pie.appendChild(el("span", "slug", h.caso));
+          if (h.revisar) pie.appendChild(el("span", "chip", "Por revisar"));
+          if (pie.childNodes.length) b.appendChild(pie);
+          b.setAttribute("aria-label", a.codigo + ". " + h.historia + (h.revisar ? ". Tiene REVISAR" : ""));
+          cel.appendChild(b);
+        });
+        if (!hs.length) cel.appendChild(el("span", "vacio", "·"));
+        nFila += hs.length; total += hs.length;
+        tablero.appendChild(cel);
+      });
+      th.appendChild(el("span", "n", nFila + (nFila === 1 ? " historia" : " historias")));
+      tablero.appendChild(th);
+    });
+    document.getElementById("resumen-filtro").textContent = "Mostrando " + total + " de " + historias.length + " historias.";
+  }
+
+  function abrir(id, origen) {
+    var h = historias.filter(function (x) { return x.id === id; })[0]; if (!h) return;
+    var a = nombreAct(h.actividad);
+    estado.abierta = id; ultimoFoco = origen || null;
+    document.getElementById("det-id").textContent = h.id + " · " + a.codigo;
+    document.getElementById("det-titulo").textContent = h.historia;
+    document.getElementById("det-actividad").textContent = a.codigo + " · " + a.nombre + " (" + (a.producto === "panel" ? "Panel" : "App") + ")";
+    var cn = cortes.filter(function (c) { return c.id === h.corte; })[0];
+    document.getElementById("det-corte").textContent = h.corte === null ? "Sin corte / por decidir" : "Corte " + h.corte + " · " + cn.nombre;
+    document.getElementById("det-pantallas").textContent = h.pantallas;
+    document.getElementById("det-caso").textContent = h.caso || "Sin caso asignado";
+    var gal = document.getElementById("det-capturas"); gal.textContent = "";
+    if (h.frames && h.frames.length) {
+      h.frames.forEach(function (fid) {
+        var f = framePorId[fid] || { id: fid, nombre: fid };
+        var fig = el("figure");
+        var enlace = el("button", "ampliar"); enlace.type = "button"; enlace.setAttribute("aria-label", "Ampliar " + f.nombre);
+        var img = el("img"); img.src = rutaCaptura(fid); img.alt = f.nombre; img.loading = "lazy";
+        img.addEventListener("error", function () { fig.replaceChild(el("div", "sin", f.nombre + " · sin captura"), enlace); });
+        enlace.addEventListener("click", function () { ampliar(fid, f.nombre, enlace); });
+        enlace.appendChild(img); fig.appendChild(enlace);
+        var cap = el("figcaption"); cap.appendChild(el("span", null, f.nombre));
+        var l2 = el("a", null, "Abrir en Figma"); l2.href = FIGMA + fid; l2.target = "_blank"; l2.rel = "noopener"; cap.appendChild(l2);
+        fig.appendChild(cap); gal.appendChild(fig);
+      });
+    } else {
+      gal.appendChild(el("div", "sin", "Esta historia no tiene pantalla diseñada en Figma."));
+    }
+    var r = document.getElementById("det-revisar"); r.textContent = h.revisar || "Nada pendiente."; r.className = h.revisar ? "aviso" : "";
+    detalle.hidden = false;
+    Array.prototype.forEach.call(tablero.querySelectorAll(".tarjeta"), function (b) { b.setAttribute("aria-expanded", b.getAttribute("data-id") === id ? "true" : "false"); });
+    document.getElementById("det-cerrar").focus();
+  }
+  var visor = document.getElementById("visor"), visorImg = document.getElementById("visor-img"), focoVisor = null;
+  function ampliar(fid, nombre, origen) {
+    focoVisor = origen || null;
+    visorImg.src = rutaCaptura(fid); visorImg.alt = nombre;
+    document.getElementById("visor-nombre").textContent = nombre;
+    document.getElementById("visor-figma").href = FIGMA + fid;
+    visor.classList.remove("real"); document.getElementById("visor-tamano").textContent = "Tamaño real";
+    visor.hidden = false; document.getElementById("visor-cerrar").focus();
+  }
+  function cerrarVisor() {
+    visor.hidden = true; visorImg.src = "";
+    if (focoVisor && document.body.contains(focoVisor)) focoVisor.focus();
+  }
+  document.getElementById("visor-cerrar").addEventListener("click", cerrarVisor);
+  document.getElementById("visor-tamano").addEventListener("click", function () {
+    var real = visor.classList.toggle("real");
+    this.textContent = real ? "Ajustar a la ventana" : "Tamaño real";
+  });
+  visorImg.addEventListener("click", cerrarVisor);
+  visor.addEventListener("click", function (e) { if (e.target === visor) cerrarVisor(); });
+
+  function cerrar() {
+    detalle.hidden = true; estado.abierta = null;
+    Array.prototype.forEach.call(tablero.querySelectorAll(".tarjeta"), function (b) { b.setAttribute("aria-expanded", "false"); });
+    if (ultimoFoco && document.body.contains(ultimoFoco)) ultimoFoco.focus();
+  }
+
+  tablero.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".tarjeta") : null;
+    if (b) abrir(b.getAttribute("data-id"), b);
+  });
+  document.getElementById("det-cerrar").addEventListener("click", cerrar);
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (!visor.hidden) cerrarVisor(); else if (!detalle.hidden) cerrar();
+  });
+
+  var segs = document.querySelectorAll("#f-producto button");
+  Array.prototype.forEach.call(segs, function (b) {
+    b.addEventListener("click", function () {
+      estado.producto = b.getAttribute("data-v");
+      Array.prototype.forEach.call(segs, function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      if (!detalle.hidden) cerrar(); render();
+    });
+  });
+  document.getElementById("f-corte").addEventListener("change", function (e) { estado.corte = e.target.value; if (!detalle.hidden) cerrar(); render(); });
+  document.getElementById("f-revisar").addEventListener("change", function (e) { estado.revisar = e.target.checked; if (!detalle.hidden) cerrar(); render(); });
+  document.getElementById("f-capturas").addEventListener("change", function (e) { estado.capturas = e.target.checked; render(); });
+
+  render();
+})();
+</script>

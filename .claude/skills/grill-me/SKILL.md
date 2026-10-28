@@ -13,7 +13,7 @@ Interrogar sin tregua la definición de un caso hasta llegar a un entendimiento 
 
 ## Sobre qué se hace
 
-Sobre `casos/<slug>.md`. Si el usuario no da el slug, listar `casos/` y preguntar cuál. Lee el caso entero, `contexto.md` y las pantallas implicadas en `mapa-de-pantallas.md` (y en Figma si hay conector).
+Sobre `casos/<slug>.md`. Si el usuario no da el slug, listar `casos/` y preguntar cuál. Lee el caso entero, `contexto.md` y las pantallas implicadas en `diseno/mapa-de-pantallas.md` (y en Figma si hay conector).
 
 Buscar huecos en:
 - **Comportamiento:** reglas, estados (vacío, cargando, error, éxito), validaciones, permisos (administrador global frente a subadministrador), idiomas.

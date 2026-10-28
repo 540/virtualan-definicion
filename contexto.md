@@ -71,6 +71,7 @@ El panel completo queda en Figma como visión futura (página «Prototipo · Pan
 - [Prototipo del panel](https://www.figma.com/proto/1RBvs1NprjX6oR3P76wE99/CulturApp-%C2%B7-Design-system?page-id=165%3A2228&node-id=165-3514&starting-point-node-id=165%3A3514&scaling=scale-down-width) (escritorio 1440, con diagrama de flujo y arquitectura al lado)
 - [Prototipo de la app](https://www.figma.com/proto/1RBvs1NprjX6oR3P76wE99/CulturApp-%C2%B7-Design-system?page-id=48%3A2&node-id=330-621&starting-point-node-id=330%3A621&scaling=scale-down-width) (375×812; Inicio, Explorar, Visita, Cuenta; sección «Fase 2 · Pago»)
 - [Prototipo web del panel completo](https://claude.ai/artifact/PaBRhqaDqYbzCvk3myfnuV) (referencia, no está al día)
+- [Tablero del User Story Mapping](https://claude.ai/artifact/4k3hGuTfLGzv4Qy3abUEFY) (copia publicada para enseñar fuera; la de trabajo es `estrategia/user-story-mapping.html` en este repo)
 - [Panel actual](https://dashboard.culturapp.es) · [Web](https://culturapp.es)
 - [Notas del kick off](https://docs.google.com/document/d/1e4TgfvuTsCmoBWrBc7FVxwinhhj2yNG7RkEQXexO1cg) · [Notas del aterrizaje](https://docs.google.com/document/d/1CZbK-Ne6PNGCo82J47NWVi47PfvEfJMoun09vUqrV5A)
 - Repo de desarrollo (futuro, hermano): `/Users/lewricka/Development/Virtualan/virtualan`

@@ -11,7 +11,7 @@ Vista rápida del avance de la definición. Solo lee `casos/*.md` y reescribe `e
 
 ## Flujo
 
-1. Listar `casos/*.md` (ignorar `.gitkeep`). Si no hay casos, escribir `estado.md` vacío con la tabla sin filas y avisar.
+1. Listar `casos/*.md`. Si la carpeta no existe o no hay casos, avisar y no crear `estado.md`.
 2. De cada caso leer: título (primer `#`), `producto`, `estado`, tareas hechas/total (en la sección Tareas, tareas `### T<n>` y su casilla `Hecha: [x]`), dudas abiertas (casillas `- [ ]` en la sección Dudas).
 3. Reescribir `estado.md`:
 

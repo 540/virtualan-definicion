@@ -1,0 +1,424 @@
+<title>User Story Mapping CulturApp</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* Paleta única, clara: el tablero se lee sobre blanco porque las capturas son claras. */
+/* Paleta única, clara. Neutros fríos con matiz azul; azul de marca para el panel, ocre para la app; ámbar para lo pendiente. */
+:root {
+  --bg: #ffffff; --fg: #18212b; --muted: #65717f; --line: #e3e7ec; --accent: #1f4e8c; --warn: #b7791f; --warn-bg: #fff6e5;
+  --panel: #e8f0fa; --panel-fuerte: #1f4e8c; --app: #f6efdc; --app-fuerte: #9a6b0f;
+  --card: #ffffff; --alt: #f7f9fb; --skel: #eef4fc; --on-accent: #ffffff; --ok: #1d7a4b; --ok-bg: #e9f6ee;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); margin: 0; font-family: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 48px; }
+h1, h2 { font-family: "Fraunces", Georgia, "Times New Roman", serif; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+code, .mono { font-family: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.cabecera { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 10px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.cab-fila { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; justify-content: space-between; }
+h1 { font-size: clamp(1.2rem, 3.6vw, 1.7rem); }
+.meta { color: var(--muted); font-size: 0.85rem; margin: 2px 0 0; }
+.contadores { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 8px 0 0; padding: 0; list-style: none; font-variant-numeric: tabular-nums; }
+.contadores li { font-size: 0.82rem; color: var(--muted); }
+.contadores b { font-size: 1.1rem; color: var(--fg); margin-right: 4px; font-family: "Fraunces", Georgia, serif; }
+.filtros { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; margin: 18px 0 12px; }
+.filtro { display: flex; flex-direction: column; gap: 4px; }
+.filtro > span, .filtro legend { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 0; }
+fieldset.filtro { border: 0; padding: 0; margin: 0; min-width: 0; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; font-size: 0.85rem; padding: 7px 14px; border: 0; background: var(--card); color: var(--fg); cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+select { font: inherit; font-size: 0.9rem; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); min-height: 36px; max-width: 100%; }
+.interruptor { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem; min-height: 36px; }
+.interruptor input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.interruptor .pista { width: 38px; height: 22px; border-radius: 11px; background: var(--line); position: relative; transition: background .15s; flex: none; }
+.interruptor .pista::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--card); transition: transform .15s; }
+.interruptor input:checked + .pista { background: var(--warn); }
+.interruptor input:checked + .pista::after { transform: translateX(16px); }
+.interruptor input:focus-visible + .pista { outline: 3px solid var(--accent); outline-offset: 2px; }
+.resumen-filtro { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; margin: 0 0 8px; }
+
+.tablero-marco { border: 1px solid var(--line); border-radius: 12px; overflow: auto; max-height: 80vh; background: var(--bg); -webkit-overflow-scrolling: touch; box-shadow: 0 1px 3px rgba(24, 33, 43, 0.05); }
+.tablero { display: grid; width: max-content; min-width: 100%; }
+.tablero > * { min-width: 0; }
+.th-grupo, .th-act, .th-corner { position: sticky; z-index: 12; }
+.th-grupo { top: 0; height: 36px; display: flex; align-items: center; padding: 0 14px; font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.01em; border-right: 1px solid rgba(255,255,255,0.25); }
+.th-grupo.panel { background: var(--panel-fuerte); color: var(--on-accent); }
+.th-grupo.app { background: var(--app-fuerte); color: var(--on-accent); }
+.th-act { top: 36px; padding: 10px 12px 9px; background: var(--bg); border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); font-size: 0.86rem; font-weight: 600; line-height: 1.25; box-shadow: inset 0 3px 0 var(--line); }
+.th-act .cod { display: flex; align-items: center; gap: 6px; }
+.th-act .ok { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); font-size: 0.7rem; font-weight: 700; line-height: 1; }
+.th-act.panel { background: var(--panel); box-shadow: inset 0 3px 0 var(--panel-fuerte); }
+.th-act.app { background: var(--app); box-shadow: inset 0 3px 0 var(--app-fuerte); }
+.th-act .cod { display: block; font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+.th-corner { top: 0; left: 0; z-index: 20; background: var(--bg); grid-row: 1 / span 2; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); display: flex; align-items: flex-end; padding: 8px 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.th-corte { position: sticky; left: 0; z-index: 10; padding: 14px 12px; background: var(--bg); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 0.82rem; line-height: 1.3; }
+.th-corte .num { display: block; font-family: "Fraunces", Georgia, serif; font-size: 1.9rem; font-weight: 700; line-height: 1; margin-bottom: 6px; color: var(--muted); }
+.th-corte .nom { font-weight: 600; }
+.th-corte .ok { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 0.7rem; font-weight: 600; padding: 3px 8px 3px 6px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); white-space: nowrap; }
+.th-corte .ok::before { content: "\2713"; font-size: 0.75rem; }
+.th-corte .n { display: block; color: var(--muted); font-size: 0.75rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.celda { padding: 10px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; min-height: 56px; }
+.fila-a, .fila-b { background: var(--bg); }
+.celda.fila-a, .celda.fila-b { background: var(--alt); }
+.fila-0 { background: var(--skel); }
+.celda.fila-0 { background: var(--skel); }
+.th-corte.fila-0 { background: var(--skel); }
+.th-corte.fila-0 .num { color: var(--accent); }
+.fila-0.th-corte { box-shadow: inset 3px 0 0 var(--accent); }
+.tarjeta { all: unset; box-sizing: border-box; display: block; cursor: pointer; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px 10px; font-size: 0.8rem; line-height: 1.35; box-shadow: 0 1px 2px rgba(24, 33, 43, 0.05), 0 1px 0 rgba(24, 33, 43, 0.03); transition: box-shadow .12s, border-color .12s; }
+.tarjeta:hover { border-color: var(--accent); box-shadow: 0 3px 10px rgba(31, 78, 140, 0.12); }
+.tarjeta:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tarjeta[aria-expanded="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--panel); }
+.tarjeta.revisar { border-color: var(--line); }
+.tarjeta .txt { display: block; color: var(--fg); font-weight: 500; }
+.tarjeta .pie { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; margin-top: 7px; }
+.tarjeta .slug { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.66rem; color: var(--muted); overflow-wrap: anywhere; }
+.chip { font-size: 0.64rem; font-weight: 600; letter-spacing: 0.02em; padding: 1px 7px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); }
+.vacio { color: var(--muted); font-size: 0.75rem; opacity: 0.7; }
+.tarjeta .mini { display: block; width: calc(100% + 20px); margin: -9px -10px 8px; height: 104px; object-fit: cover; object-position: top; border-radius: 8px 8px 0 0; border-bottom: 1px solid var(--line); background: var(--alt); }
+.tarjeta .mini.alta { object-fit: contain; background: #e9edf2; }
+.galeria { display: flex; flex-direction: column; gap: 14px; margin: 4px 0 0; }
+.galeria figure { margin: 0; }
+.galeria img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 6px; background: var(--alt); }
+.galeria figcaption { font-size: 0.78rem; color: var(--muted); margin-top: 4px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.galeria figcaption a { color: var(--accent); }
+.galeria .sin { font-size: 0.8rem; color: var(--muted); padding: 10px 12px; border: 1px dashed var(--line); border-radius: 6px; }
+.galeria button.ampliar { all: unset; display: block; cursor: zoom-in; width: 100%; }
+.galeria button.ampliar:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.visor { position: fixed; inset: 0; z-index: 80; background: color-mix(in srgb, var(--fg) 88%, transparent); display: flex; flex-direction: column; align-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); overflow: auto; }
+.visor[hidden] { display: none; }
+.visor .barra { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--bg); font-size: 0.9rem; margin-bottom: 12px; flex: none; }
+.visor .barra a { color: var(--bg); }
+.visor .barra button { font: inherit; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.visor img { display: block; max-width: 100%; width: auto; height: auto; border-radius: 6px; background: var(--card); cursor: zoom-out; }
+.visor.real img { max-width: none; }
+
+.detalle { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 100%); z-index: 50; background: var(--card); border-left: 1px solid var(--line); padding: 20px max(16px, env(safe-area-inset-right, 0px)) 24px 20px; overflow-y: auto; box-shadow: -12px 0 32px color-mix(in srgb, var(--fg) 18%, transparent); }
+.detalle[hidden] { display: none; }
+.detalle h2 { font-size: 1.15rem; margin: 6px 0 14px; line-height: 1.25; }
+.detalle dl { margin: 0; }
+.detalle dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 14px; }
+.detalle dd { margin: 3px 0 0; }
+.detalle .aviso { border-left: 4px solid var(--warn); padding: 8px 12px; background: var(--warn-bg); border-radius: 0 6px 6px 0; }
+.detalle .cerrar { position: absolute; top: 12px; right: max(12px, env(safe-area-inset-right, 0px)); font: inherit; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.id-hist { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.78rem; color: var(--muted); }
+
+section.seccion { margin-top: 40px; }
+section.seccion h2 { font-size: 1.3rem; margin-bottom: 12px; }
+ol.pasos { margin: 0; padding-left: 1.4rem; max-width: 70ch; }
+ol.pasos li { margin-bottom: 6px; }
+.nota { color: var(--muted); max-width: 70ch; }
+.tabla-marco { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table.dec { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+table.dec th, table.dec td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.dec th { background: var(--alt); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+table.dec tr:last-child td { border-bottom: 0; }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+@media (max-width: 560px) {
+  .filtros { flex-direction: column; align-items: stretch; }
+  .seg { display: flex; } .seg button { flex: 1; }
+  .tablero-marco { max-height: 70vh; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<header class="cabecera">
+  <div class="cab-fila">
+    <h1>User Story Mapping · CulturApp MVP</h1>
+    <p class="meta"><time datetime="2026-10-27">2026-10-27</time> · Corte 0 validado · resto en borrador para validar con el equipo · backbone (actividades) validado el 2026-10-28</p>
+  </div>
+  <ul class="contadores" aria-label="Resumen">
+    <li><b id="cnt-historias">0</b>historias</li>
+    <li><b id="cnt-actividades">0</b>actividades</li>
+    <li><b id="cnt-casos">0</b>casos propuestos</li>
+    <li><b id="cnt-revisar">0</b>con REVISAR</li>
+  </ul>
+</header>
+
+<main>
+<div class="filtros" role="group" aria-label="Filtros del tablero">
+  <fieldset class="filtro"><legend>Producto</legend>
+    <div class="seg" id="f-producto">
+      <button type="button" id="f-producto-todo" data-v="todo" aria-pressed="true">Todo</button>
+      <button type="button" id="f-producto-panel" data-v="panel" aria-pressed="false">Panel</button>
+      <button type="button" id="f-producto-app" data-v="app" aria-pressed="false">App</button>
+    </div>
+  </fieldset>
+  <label class="filtro" for="f-corte"><span>Corte</span>
+    <select id="f-corte">
+      <option value="todos">Todos los cortes</option>
+      <option value="0">0 · Walking skeleton (validado)</option>
+      <option value="1">1 · Visita completa en castellano</option>
+      <option value="2">2 · Multiidioma</option>
+      <option value="3">3 · Entidades y administradores</option>
+      <option value="4">4 · Descubrimiento y cuenta</option>
+      <option value="sin">Sin corte / por decidir</option>
+    </select>
+  </label>
+  <label class="interruptor" for="f-revisar"><input type="checkbox" id="f-revisar"><span class="pista" aria-hidden="true"></span>Solo con REVISAR</label>
+  <label class="interruptor" for="f-capturas"><input type="checkbox" id="f-capturas" checked><span class="pista" aria-hidden="true"></span>Mostrar capturas</label>
+</div>
+<p class="resumen-filtro" id="resumen-filtro" aria-live="polite"></p>
+
+<div class="tablero-marco" id="tablero-marco" tabindex="0" role="region" aria-label="Tablero de User Story Mapping, desplazable">
+  <div class="tablero" id="tablero"></div>
+</div>
+
+<section class="seccion" id="skeleton">
+  <h2>Walking skeleton · recorrido exacto</h2>
+  <p class="nota">Validado el 2026-10-27 (Iker Mariñelarena). Las 13 historias del corte 0 quedan cerradas; cualquier cambio se anota con fecha.</p>
+  <ol class="pasos">
+    <li>Administrador entra en el panel con correo y contraseña.</li>
+    <li>Pulsa «Crear lugar», escribe el nombre en castellano, guarda. Se crea la URL del QR del lugar.</li>
+    <li>Entra en «Puntos de interés», pulsa «Añadir punto de interés», escribe el título, guarda. Se crea la URL del QR del punto.</li>
+    <li>Pulsa «Añadir contenido», elige texto, escribe título y texto, guarda.</li>
+    <li>Activa «Publicado en la app».</li>
+    <li>Se asocia al lugar el QR creado fuera con QR Kit, por la vía más sencilla (en base de datos si hace falta).</li>
+    <li>Visitante escanea el QR del lugar con el móvil, entra en el punto y lee el texto.</li>
+  </ol>
+  <p class="nota">Lo que queda fuera a propósito del corte 0: generar QR desde el panel (el del lugar viene de QR Kit), imágenes, idiomas (todo se guarda en castellano por defecto), audio, estados de error, lista de administradores, diseño final.</p>
+</section>
+
+<section class="seccion" id="decisiones">
+  <h2>Decisiones pendientes</h2>
+  <div class="tabla-marco"><table class="dec">
+    <thead><tr><th scope="col">Decisión</th><th scope="col">Quién</th><th scope="col">Afecta a</th></tr></thead>
+    <tbody>
+      <tr><td>Backend: nuevo o sobre el actual; migración de datos existentes</td><td>Marta</td><td>Corte 0</td></tr>
+      <tr><td>Alcance del 360 en el MVP (editor en panel y visor en app)</td><td>Iker Ibero, Olaia</td><td>P7, V4</td></tr>
+      <tr><td>Editores de vídeo, imagen y antes y después: ¿se diseñan o se derivan del de texto y audio?</td><td>Olaia</td><td>P7</td></tr>
+      <tr><td>Qué aporta la cuenta del visitante sin pago</td><td>Iker Ibero, Pablo</td><td>V6, corte 4</td></tr>
+      <tr><td>Registro de cada escaneo: ¿MVP?</td><td>Iker Ibero</td><td>P8</td></tr>
+      <tr><td>Requisitos para publicar un lugar</td><td>Iker Ibero</td><td>P9</td></tr>
+      <tr><td>Orden de los cortes 3 y 4</td><td>Pablo, Marta</td><td>Plan</td></tr>
+      <tr><td>Pantallas que faltan en Figma: recuperar contraseña, menú de usuario, borrar punto y contenido, mostrar QR desde listas, añadir idioma, Bienvenida, Vista 360, Ajustes</td><td>Olaia</td><td>Varios</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="seccion" id="fuera">
+  <h2>Fuera de alcance (fase 2)</h2>
+  <p class="nota">Pago de visitas y acceso temporal a audioguías, escanear QR desde la app, ventas, papelera, usuarios y buscador del panel, precio, 3D y realidad aumentada. Rastros en el diseño: candado y leyenda «Todas son gratuitas» en Explorar, «condiciones de compra» en el acceso, columna Entidad como multi-entidad completa.</p>
+</section>
+</main>
+
+<footer>
+  Fuentes: <code>diseno/mapa-de-pantallas.md</code> y <code>contexto.md</code>. La extracción del Figma fue parcial: varios frames se leyeron solo por estructura y el panel actual no se pudo revisar. Generado el 2026-10-28 desde <code>estrategia/user-story-mapping.md</code>.
+</footer>
+
+<div class="visor" id="visor" hidden role="dialog" aria-modal="true" aria-label="Captura ampliada">
+  <div class="barra">
+    <span id="visor-nombre"></span>
+    <span><a id="visor-figma" href="#" target="_blank" rel="noopener">Abrir en Figma</a> · <button type="button" id="visor-tamano">Tamaño real</button> <button type="button" id="visor-cerrar">Cerrar</button></span>
+  </div>
+  <img id="visor-img" src="" alt="">
+</div>
+
+<aside class="detalle" id="detalle" hidden aria-labelledby="det-titulo">
+  <button type="button" class="cerrar" id="det-cerrar">Cerrar</button>
+  <div class="id-hist" id="det-id"></div>
+  <h2 id="det-titulo"></h2>
+  <dl>
+    <dt>Actividad</dt><dd id="det-actividad"></dd>
+    <dt>Corte</dt><dd id="det-corte"></dd>
+    <dt>Pantallas</dt><dd id="det-pantallas"></dd>
+    <dt>Capturas de Figma</dt><dd><div class="galeria" id="det-capturas"></div></dd>
+    <dt>Caso</dt><dd id="det-caso" class="mono"></dd>
+    <dt>REVISAR</dt><dd id="det-revisar"></dd>
+  </dl>
+</aside>
+
+<script type="application/json" id="datos-historias">[{"id": "P1-1", "actividad": "P1", "historia": "Entrar con correo y contraseña", "corte": 0, "pantallas": "Acceso", "caso": "entrar-en-el-panel", "revisar": "", "frames": ["165-3514"]}, {"id": "P1-2", "actividad": "P1", "historia": "Ver el error de contraseña incorrecta", "corte": 1, "pantallas": "Acceso · contraseña incorrecta", "caso": "entrar-en-el-panel", "revisar": "", "frames": ["177-863"]}, {"id": "P1-3", "actividad": "P1", "historia": "Recordar la sesión («Recordarme»)", "corte": 1, "pantallas": "Acceso", "caso": "entrar-en-el-panel", "revisar": "Duración de la sesión: no está en el diseño.", "frames": ["165-3514"]}, {"id": "P1-4", "actividad": "P1", "historia": "Recuperar la contraseña", "corte": 3, "pantallas": "Sin frame", "caso": "entrar-en-el-panel", "revisar": "No hay pantalla en Figma. Pedir a Olaia o definir solo por correo.", "frames": []}, {"id": "P1-5", "actividad": "P1", "historia": "Cerrar sesión", "corte": 1, "pantallas": "Sin frame (menú de usuario del lateral)", "caso": "entrar-en-el-panel", "revisar": "El chevron del usuario no tiene menú diseñado.", "frames": []}, {"id": "P2-1", "actividad": "P2", "historia": "Ver la lista de lugares con su nombre y número de puntos", "corte": 0, "pantallas": "Lista de lugares", "caso": "lista-de-lugares", "revisar": "", "frames": ["165-2229"]}, {"id": "P2-2", "actividad": "P2", "historia": "Ver la entidad de cada lugar en la lista", "corte": 3, "pantallas": "Lista de lugares", "caso": "lista-de-lugares", "revisar": "Decisión del 26 de octubre. ¿Qué ve un administrador de entidad: solo sus lugares?", "frames": ["165-2229"]}, {"id": "P2-3", "actividad": "P2", "historia": "Paginar la lista", "corte": 1, "pantallas": "Lista de lugares", "caso": "lista-de-lugares", "revisar": "", "frames": ["165-2229"]}, {"id": "P2-4", "actividad": "P2", "historia": "Abrir la ficha de un lugar desde la lista", "corte": 0, "pantallas": "Lista de lugares, Lugares · acciones", "caso": "lista-de-lugares", "revisar": "", "frames": ["165-2229", "184-2201"]}, {"id": "P3-1", "actividad": "P3", "historia": "Crear un lugar con nombre y presentación, y guardarlo", "corte": 0, "pantallas": "Nuevo lugar, Ficha · Información", "caso": "crear-lugar", "revisar": "", "frames": ["180-1542", "165-2862"]}, {"id": "P3-2", "actividad": "P3", "historia": "Rellenar la ubicación (dirección, municipio, provincia, marcador en el mapa)", "corte": 1, "pantallas": "Nuevo lugar, Ficha · Información", "caso": "editar-informacion-del-lugar", "revisar": "Geocodificación automática y sus errores: no están en el diseño.", "frames": ["180-1542", "165-2862"]}, {"id": "P3-3", "actividad": "P3", "historia": "Subir las imágenes del lugar (portada, tarjeta, fondo de bienvenida, logo de la entidad, galería hasta 6)", "corte": 1, "pantallas": "Ficha · Información", "caso": "editar-informacion-del-lugar", "revisar": "Logo de la entidad: pregunta abierta de Iker Ibero del 22 de octubre. Errores de tamaño y formato sin diseñar.", "frames": ["165-2862"]}, {"id": "P3-4", "actividad": "P3", "historia": "Subir el audio de bienvenida", "corte": 1, "pantallas": "Ficha · Información", "caso": "editar-informacion-del-lugar", "revisar": "", "frames": ["165-2862"]}, {"id": "P4-1", "actividad": "P4", "historia": "Guardar todo en castellano por defecto: el lugar nace con ES como único idioma y predeterminado", "corte": 0, "pantallas": "Nuevo lugar", "caso": "configurar-idiomas-del-lugar", "revisar": "", "frames": ["180-1542"]}, {"id": "P4-2", "actividad": "P4", "historia": "Marcar los idiomas disponibles del lugar (ES · EU · EN · FR · CA · GL)", "corte": 2, "pantallas": "Ficha · Información", "caso": "configurar-idiomas-del-lugar", "revisar": "", "frames": ["165-2862"]}, {"id": "P4-3", "actividad": "P4", "historia": "Elegir el idioma predeterminado", "corte": 2, "pantallas": "Ficha · Información", "caso": "configurar-idiomas-del-lugar", "revisar": "Decisión del 26 de octubre: ningún idioma obligatorio, hay predeterminado.", "frames": ["165-2862"]}, {"id": "P4-4", "actividad": "P4", "historia": "Cambiar de idioma con los chips y rellenar los textos de cada idioma", "corte": 2, "pantallas": "Ficha · Información · euskera, Punto · euskera", "caso": "configurar-idiomas-del-lugar", "revisar": "", "frames": ["180-1247", "181-1520"]}, {"id": "P4-5", "actividad": "P4", "historia": "Ver qué idioma falta en cada lugar, punto y contenido («Falta EU», chip discontinuo)", "corte": 2, "pantallas": "Lista de lugares, Puntos del lugar, Punto", "caso": "configurar-idiomas-del-lugar", "revisar": "¿Un idioma incompleto bloquea publicar?", "frames": ["165-2229", "165-2990", "165-3297"]}, {"id": "P4-6", "actividad": "P4", "historia": "Añadir un idioma nuevo al sistema (solo administrador global)", "corte": 3, "pantallas": "Sin frame («Añadir idioma»)", "caso": "configurar-idiomas-del-lugar", "revisar": "No hay pantalla. El texto de la tarjeta difiere entre las dos variantes de la ficha.", "frames": []}, {"id": "P5-1", "actividad": "P5", "historia": "Ver los puntos del lugar, en el orden en que se crearon, y abrir uno", "corte": 0, "pantallas": "Puntos del lugar", "caso": "puntos-del-lugar", "revisar": "", "frames": ["165-2990"]}, {"id": "P5-2", "actividad": "P5", "historia": "Ver en cada punto su duración y cuántos contenidos tiene de cada tipo", "corte": 1, "pantallas": "Puntos del lugar", "caso": "puntos-del-lugar", "revisar": "Los chips de idioma y «Falta EU» llegan con la historia del corte 2.", "frames": ["165-2990"]}, {"id": "P5-3", "actividad": "P5", "historia": "Cambiar el orden de los puntos (flechas)", "corte": 1, "pantallas": "Puntos del lugar", "caso": "ordenar-puntos", "revisar": "Solo flechas, sin arrastrar.", "frames": ["165-2990"]}, {"id": "P5-4", "actividad": "P5", "historia": "Ver el estado vacío cuando el lugar aún no tiene puntos", "corte": 1, "pantallas": "Nuevo lugar (pestaña «Puntos de interés 0»)", "caso": "puntos-del-lugar", "revisar": "No hay frame del estado vacío de la pestaña.", "frames": ["180-1542"]}, {"id": "P6-1", "actividad": "P6", "historia": "Crear un punto con título y guardarlo", "corte": 0, "pantallas": "Nuevo punto", "caso": "anadir-punto-de-interes", "revisar": "", "frames": ["181-1862"]}, {"id": "P6-2", "actividad": "P6", "historia": "Rellenar duración, descripción breve, imagen principal y galería (hasta 8)", "corte": 1, "pantallas": "Punto", "caso": "editar-punto-de-interes", "revisar": "", "frames": ["165-3297"]}, {"id": "P6-3", "actividad": "P6", "historia": "Borrar un punto", "corte": 1, "pantallas": "Sin frame (menú ··· del punto)", "caso": "borrar-punto", "revisar": "No hay modal diseñado. ¿Aviso de que su QR deja de funcionar, como en borrar lugar?", "frames": []}, {"id": "P7-1", "actividad": "P7", "historia": "Añadir un texto (título y texto)", "corte": 0, "pantallas": "Punto · añadir contenido, Editor · Texto", "caso": "anadir-contenido-de-texto", "revisar": "", "frames": ["181-2313", "182-2048"]}, {"id": "P7-2", "actividad": "P7", "historia": "Añadir una imagen opcional entre el título y el texto", "corte": 1, "pantallas": "Editor · Texto", "caso": "anadir-contenido-de-texto", "revisar": "Decisión del 26 de octubre. Rótulo del botón de la galería intermedia sin leer.", "frames": ["182-2048"]}, {"id": "P7-3", "actividad": "P7", "historia": "Añadir un audio (MP3 hasta 20 MB, uno por idioma)", "corte": 1, "pantallas": "Editor · Audio", "caso": "anadir-contenido-de-audio", "revisar": "", "frames": ["182-2366"]}, {"id": "P7-4", "actividad": "P7", "historia": "Añadir un vídeo", "corte": 1, "pantallas": "Sin frame", "caso": "anadir-contenido-de-video", "revisar": "No hay editor diseñado. Formato, tamaño, ¿subida o enlace?", "frames": []}, {"id": "P7-5", "actividad": "P7", "historia": "Añadir una imagen con descripción y audio de explicación", "corte": 1, "pantallas": "Sin frame", "caso": "anadir-contenido-de-imagen", "revisar": "No hay editor diseñado. La app muestra imagen con audio de 0:58.", "frames": []}, {"id": "P7-6", "actividad": "P7", "historia": "Añadir un antes y después (dos imágenes)", "corte": 1, "pantallas": "Sin frame", "caso": "anadir-contenido-antes-y-despues", "revisar": "No hay editor diseñado.", "frames": []}, {"id": "P7-7", "actividad": "P7", "historia": "Añadir una imagen o vídeo 360", "corte": 1, "pantallas": "Sin frame", "caso": "anadir-contenido-360", "revisar": "Kick off: 360 priorizado. No hay editor y la app tiene el frame de Vista 360 vacío. Confirmar que entra en el MVP.", "frames": []}, {"id": "P7-8", "actividad": "P7", "historia": "Editar un contenido existente (lápiz)", "corte": 1, "pantallas": "Editores", "caso": "editar-y-borrar-contenido", "revisar": "", "frames": ["182-2048", "182-2366"]}, {"id": "P7-9", "actividad": "P7", "historia": "Borrar un contenido (menú ···)", "corte": 1, "pantallas": "Sin frame", "caso": "editar-y-borrar-contenido", "revisar": "No hay modal diseñado.", "frames": []}, {"id": "P7-10", "actividad": "P7", "historia": "Dar a un contenido su propio QR", "corte": null, "pantallas": "Sin frame", "caso": null, "revisar": "El diseño menciona «Sin código QR propio» en los contenidos, pero el aterrizaje decidió «un QR por destino» (lugar y punto). Confirmar si es fase 2 o texto obsoleto.", "frames": []}, {"id": "P8-1", "actividad": "P8", "historia": "Asociar a cada lugar el QR creado fuera (QR Kit) de la forma más sencilla, aunque sea directamente en base de datos, para que se entre al lugar desde la app", "corte": 0, "pantallas": "—", "caso": "asociar-qr-externo", "revisar": "", "frames": []}, {"id": "P8-2", "actividad": "P8", "historia": "Obtener el QR del lugar al guardarlo y descargarlo para el cartel", "corte": 2, "pantallas": "Ficha · Información (tarjeta QR)", "caso": "descargar-qr", "revisar": "Formato de descarga (PNG, SVG, PDF) y tamaño: sin diseño.", "frames": ["165-2862"]}, {"id": "P8-3", "actividad": "P8", "historia": "Obtener el QR del punto al guardarlo y descargarlo", "corte": 3, "pantallas": "Punto (tarjeta QR)", "caso": "descargar-qr", "revisar": "", "frames": ["165-3297"]}, {"id": "P8-4", "actividad": "P8", "historia": "Copiar el enlace del QR", "corte": 1, "pantallas": "Ficha · Información, Punto", "caso": "descargar-qr", "revisar": "", "frames": ["165-2862", "165-3297"]}, {"id": "P8-5", "actividad": "P8", "historia": "Mostrar el QR desde la lista de lugares y desde la lista de puntos", "corte": 1, "pantallas": "Lista de lugares, Puntos del lugar", "caso": "descargar-qr", "revisar": "Destino de «Mostrar código» sin diseñar (¿modal?).", "frames": ["165-2229", "165-2990"]}, {"id": "P8-6", "actividad": "P8", "historia": "Que la URL del QR no cambie al editar el lugar o el punto", "corte": 1, "pantallas": "—", "caso": "descargar-qr", "revisar": "Dolor de partida número uno. Criterio técnico, no de pantalla.", "frames": []}, {"id": "P8-7", "actividad": "P8", "historia": "Ver cuántas veces se ha escaneado cada QR", "corte": 3, "pantallas": "Tarjetas QR («412 escaneos»)", "caso": "descargar-qr", "revisar": "Hoy solo se registra el primer escaneo. Pregunta abierta para Virtualan. ¿MVP o fase 2?", "frames": ["165-2862", "165-3297"]}, {"id": "P8-8", "actividad": "P8", "historia": "Migrar los QR ya impresos con QR Kit", "corte": null, "pantallas": "—", "caso": null, "revisar": "Pregunta abierta para Virtualan. Sin decisión.", "frames": []}, {"id": "P9-1", "actividad": "P9", "historia": "Publicar el lugar en la app (interruptor)", "corte": 0, "pantallas": "Ficha, Lista de lugares", "caso": "publicar-lugar", "revisar": "", "frames": ["165-2862", "165-2229"]}, {"id": "P9-2", "actividad": "P9", "historia": "Ver el estado Publicado o Borrador en la ficha y en la lista", "corte": 1, "pantallas": "Ficha, Lista de lugares", "caso": "publicar-lugar", "revisar": "", "frames": ["165-2862", "165-2229"]}, {"id": "P9-3", "actividad": "P9", "historia": "Despublicar un lugar (vuelve a borrador)", "corte": 3, "pantallas": "Ficha", "caso": "publicar-lugar", "revisar": "¿Qué ve el visitante que abre un QR de un lugar en borrador?", "frames": ["165-2862"]}, {"id": "P9-4", "actividad": "P9", "historia": "Editar un lugar ya creado", "corte": 1, "pantallas": "Lugares · acciones, Ficha", "caso": "editar-informacion-del-lugar", "revisar": "", "frames": ["184-2201", "165-2862"]}, {"id": "P9-5", "actividad": "P9", "historia": "Borrar un lugar con confirmación y deshacer", "corte": 1, "pantallas": "Lugares · confirmar borrado, Lugares · lugar borrado", "caso": "borrar-lugar", "revisar": "Plazo del «Deshacer» y si el borrado es real o diferido (papelera es fase 2).", "frames": ["170-752", "177-960"]}, {"id": "P10-1", "actividad": "P10", "historia": "Ver quién tiene acceso, con su entidad y sus lugares", "corte": 3, "pantallas": "Administradores", "caso": "ver-administradores", "revisar": "Frame leído solo por estructura: rótulo del rol y del botón de cabecera.", "frames": ["165-2546"]}, {"id": "P10-2", "actividad": "P10", "historia": "Invitar a un administrador por correo", "corte": 3, "pantallas": "Administradores · invitar", "caso": "invitar-administrador", "revisar": "Campos del diálogo (¿entidad? ¿lugares? ¿rol?) sin leer. Correo de invitación y alta del invitado sin diseñar.", "frames": ["179-999"]}, {"id": "P10-3", "actividad": "P10", "historia": "Ver la invitación pendiente y cancelarla", "corte": 3, "pantallas": "Administradores · invitación enviada", "caso": "invitar-administrador", "revisar": "Texto de la tostada.", "frames": ["179-1201"]}, {"id": "P10-4", "actividad": "P10", "historia": "Quitar el acceso a un administrador", "corte": 3, "pantallas": "Administradores · confirmar borrado", "caso": "quitar-acceso", "revisar": "Texto del modal.", "frames": ["179-1341"]}, {"id": "P10-5", "actividad": "P10", "historia": "Permisos: qué puede hacer el administrador de entidad frente al global", "corte": 3, "pantallas": "—", "caso": "ver-administradores", "revisar": "Solo se ve «Añadir idioma» y «Entidad: Todas». Dolor de partida: los subadministradores no tienen gestión clara.", "frames": []}, {"id": "V1-1", "actividad": "V1", "historia": "Abrir el QR del lugar y ver la portada", "corte": 0, "pantallas": "Bienvenida, Portada del lugar", "caso": "llegar-por-qr", "revisar": "", "frames": ["50-2", "227-905"]}, {"id": "V1-2", "actividad": "V1", "historia": "Abrir el QR de un punto y caer directamente en ese punto", "corte": 3, "pantallas": "Punto de interés", "caso": "llegar-por-qr", "revisar": "Depende del QR del punto (corte 3). ¿Pasa por Bienvenida o va directo?", "frames": ["53-53"]}, {"id": "V1-3", "actividad": "V1", "historia": "Elegir idioma en la bienvenida", "corte": 2, "pantallas": "Bienvenida, Cambiar idioma", "caso": "llegar-por-qr", "revisar": "Cambiar idioma: frame sin capas.", "frames": ["50-2", "61-116"]}, {"id": "V1-4", "actividad": "V1", "historia": "Abrir un QR de un lugar en borrador o borrado", "corte": 1, "pantallas": "Sin frame", "caso": "llegar-por-qr", "revisar": "Sin diseño de error.", "frames": []}, {"id": "V1-5", "actividad": "V1", "historia": "Abrir la app sin QR y ver el inicio", "corte": 4, "pantallas": "Inicio", "caso": "abrir-la-app-sin-qr", "revisar": "Destino exacto de las tarjetas de visita.", "frames": ["330-621"]}, {"id": "V2-1", "actividad": "V2", "historia": "Ver todas las visitas publicadas", "corte": 4, "pantallas": "Explorar visitas", "caso": "explorar-visitas", "revisar": "", "frames": ["311-493"]}, {"id": "V2-2", "actividad": "V2", "historia": "Buscar por nombre o municipio y ver resultados", "corte": 4, "pantallas": "Explorar · resultados", "caso": "explorar-visitas", "revisar": "Campos por los que busca.", "frames": ["356-976"]}, {"id": "V2-3", "actividad": "V2", "historia": "No encontrar nada", "corte": 4, "pantallas": "Explorar · sin resultados", "caso": "explorar-visitas", "revisar": "Texto y acciones del estado vacío sin leer.", "frames": ["356-1011"]}, {"id": "V3-1", "actividad": "V3", "historia": "Ver la portada: presentación, datos, galería y lista de puntos", "corte": 1, "pantallas": "Portada del lugar", "caso": "ver-portada-del-lugar", "revisar": "«Mapa de la visita» está en la arquitectura sin frame.", "frames": ["227-905"]}, {"id": "V3-2", "actividad": "V3", "historia": "Ir al lugar («Cómo llegar»)", "corte": 1, "pantallas": "Portada del lugar", "caso": "ver-portada-del-lugar", "revisar": "Acción sin confirmar (¿abre mapas?).", "frames": ["227-905"]}, {"id": "V3-3", "actividad": "V3", "historia": "Escuchar el audio de bienvenida", "corte": 1, "pantallas": "Bienvenida o Portada", "caso": "ver-portada-del-lugar", "revisar": "Dónde suena: sin diseño.", "frames": ["50-2", "227-905"]}, {"id": "V3-4", "actividad": "V3", "historia": "Abrir un punto y ver sus contenidos por pestañas", "corte": 0, "pantallas": "Punto de interés", "caso": "recorrer-los-puntos", "revisar": "", "frames": ["53-53", "454-5329", "454-5446", "516-1056", "516-1101", "516-1146"]}, {"id": "V3-5", "actividad": "V3", "historia": "Pasar al punto siguiente o anterior", "corte": 1, "pantallas": "Punto de interés", "caso": "recorrer-los-puntos", "revisar": "Decisión del 26 de octubre: «Siguiente punto» como botón.", "frames": ["53-53"]}, {"id": "V3-6", "actividad": "V3", "historia": "Terminar la visita y ver el cierre", "corte": 1, "pantallas": "Punto 6, Fin de la visita", "caso": "recorrer-los-puntos", "revisar": "", "frames": ["526-1398", "63-339"]}, {"id": "V4-1", "actividad": "V4", "historia": "Leer un texto y pasar al siguiente", "corte": 0, "pantallas": "Texto", "caso": "leer-texto", "revisar": "", "frames": ["54-104", "535-2269", "535-2284", "535-2299"]}, {"id": "V4-2", "actividad": "V4", "historia": "Escuchar un audio con reproductor (progreso, anterior, siguiente)", "corte": 1, "pantallas": "Audio · Reproductor", "caso": "escuchar-audio", "revisar": "Velocidad, −15 s, +15 s y «sigue sonando con el móvil bloqueado» están ocultos en el diseño: ¿MVP?", "frames": ["54-72", "535-2215"]}, {"id": "V4-3", "actividad": "V4", "historia": "Ver un vídeo", "corte": 1, "pantallas": "Vídeo", "caso": "ver-video", "revisar": "Controles del reproductor sin leer. Alerta oculta.", "frames": ["63-254"]}, {"id": "V4-4", "actividad": "V4", "historia": "Ver una imagen con su descripción y audio", "corte": 1, "pantallas": "Imagen", "caso": "ver-imagen", "revisar": "Zoom sin confirmar.", "frames": ["63-312"]}, {"id": "V4-5", "actividad": "V4", "historia": "Comparar antes y después con el tirador, y a pantalla completa", "corte": 1, "pantallas": "Antes y después, Antes y después · horizontal", "caso": "comparar-antes-y-despues", "revisar": "¿Se entra con el botón o al girar el móvil?", "frames": ["54-140", "454-5288"]}, {"id": "V4-6", "actividad": "V4", "historia": "Mirar una vista 360", "corte": 1, "pantallas": "Vista 360", "caso": "ver-vista-360", "revisar": "Frame vacío. Confirmar alcance.", "frames": ["63-289"]}, {"id": "V5-1", "actividad": "V5", "historia": "Cambiar el idioma desde el botón fijo «Idioma» sin perder el sitio", "corte": 2, "pantallas": "Botón Idioma (Portada, reproductor), Cambiar idioma", "caso": "cambiar-idioma-de-la-visita", "revisar": "Decisión del 26 de octubre: idioma siempre a la vista. ¿Está en el punto y en los contenidos?", "frames": ["227-905", "54-72", "61-116"]}, {"id": "V5-2", "actividad": "V5", "historia": "Saber que un contenido no está en mi idioma", "corte": 2, "pantallas": "Alerta oculta de Vídeo y Portada", "caso": "cambiar-idioma-de-la-visita", "revisar": "Mensajes sin leer.", "frames": ["227-905", "63-254"]}, {"id": "V5-3", "actividad": "V5", "historia": "Cambiar el idioma desde Ajustes", "corte": 2, "pantallas": "«Idioma de la visita» (sin frame)", "caso": "cambiar-idioma-de-la-visita", "revisar": "Probablemente la misma hoja que Cambiar idioma.", "frames": []}, {"id": "V6-1", "actividad": "V6", "historia": "Ver quién está detrás de la visita (entidad, web, teléfono, horario)", "corte": 3, "pantallas": "Sobre la entidad", "caso": "sobre-la-entidad", "revisar": "Logo de la entidad: pregunta abierta.", "frames": ["66-397"]}, {"id": "V6-2", "actividad": "V6", "historia": "Leer aviso legal, privacidad y declaración de accesibilidad", "corte": 3, "pantallas": "Sin frames", "caso": "sobre-la-entidad", "revisar": "Textos sin diseñar. Accesibilidad EN 301 549: pregunta abierta.", "frames": []}, {"id": "V6-3", "actividad": "V6", "historia": "Entrar con correo y código de 6 cifras", "corte": 4, "pantallas": "Entrar con correo, Código de verificación", "caso": "entrar-con-cuenta", "revisar": "Errores de correo y código sin diseñar. La casilla dice «condiciones de compra»: texto heredado del pago.", "frames": ["309-16968", "309-16990"]}, {"id": "V6-4", "actividad": "V6", "historia": "Entrar con Google", "corte": 4, "pantallas": "Entrar con correo", "caso": "entrar-con-cuenta", "revisar": "", "frames": ["309-16968"]}, {"id": "V6-5", "actividad": "V6", "historia": "Ver mis ajustes con sesión iniciada y cerrar sesión", "corte": 4, "pantallas": "Ajustes · con cuenta", "caso": "entrar-con-cuenta", "revisar": "Frame sin capas. No hay Ajustes sin cuenta. Qué aporta la cuenta en el MVP («Entra para guardar tu visita») no está decidido: sin pago, su valor es dudoso.", "frames": ["350-993"]}]</script>
+<script type="application/json" id="datos-actividades">[{"codigo": "P1", "nombre": "Entrar en el panel", "producto": "panel"}, {"codigo": "P2", "nombre": "Ver mis lugares", "producto": "panel"}, {"codigo": "P3", "nombre": "Crear el lugar", "producto": "panel"}, {"codigo": "P4", "nombre": "Configurar los idiomas del lugar", "producto": "panel"}, {"codigo": "P5", "nombre": "Ver los puntos del lugar", "producto": "panel"}, {"codigo": "P6", "nombre": "Añadir puntos de interés", "producto": "panel"}, {"codigo": "P7", "nombre": "Cargar contenidos en un punto", "producto": "panel"}, {"codigo": "P8", "nombre": "Preparar los QR", "producto": "panel"}, {"codigo": "P9", "nombre": "Publicar y mantener el lugar", "producto": "panel"}, {"codigo": "P10", "nombre": "Gestionar quién entra", "producto": "panel"}, {"codigo": "V1", "nombre": "Llegar a la visita", "producto": "app"}, {"codigo": "V2", "nombre": "Explorar visitas", "producto": "app"}, {"codigo": "V3", "nombre": "Recorrer la visita", "producto": "app"}, {"codigo": "V4", "nombre": "Consumir contenidos", "producto": "app"}, {"codigo": "V5", "nombre": "Cambiar de idioma", "producto": "app"}, {"codigo": "V6", "nombre": "Cuenta y entidad", "producto": "app"}]</script>
+<script type="application/json" id="datos-frames">[{"id": "165-3514", "nombre": "Acceso", "producto": "panel", "captura": true}, {"id": "177-863", "nombre": "Acceso · contraseña incorrecta", "producto": "panel", "captura": true}, {"id": "165-2229", "nombre": "Lista de lugares", "producto": "panel", "captura": true}, {"id": "184-2201", "nombre": "Menú de fila · Acciones del lugar", "producto": "panel", "captura": true}, {"id": "170-752", "nombre": "Modal · confirmar borrado", "producto": "panel", "captura": true}, {"id": "177-960", "nombre": "Tostada · lugar borrado", "producto": "panel", "captura": true}, {"id": "165-2862", "nombre": "Ficha del lugar · Información", "producto": "panel", "captura": true}, {"id": "180-1247", "nombre": "Ficha · Información · euskera", "producto": "panel", "captura": true}, {"id": "180-1542", "nombre": "Nuevo lugar", "producto": "panel", "captura": true}, {"id": "165-2990", "nombre": "Puntos del lugar (pestaña Puntos de interés)", "producto": "panel", "captura": true}, {"id": "165-3297", "nombre": "Punto", "producto": "panel", "captura": true}, {"id": "181-1520", "nombre": "Punto · euskera", "producto": "panel", "captura": false}, {"id": "181-2313", "nombre": "Menú · Añadir contenido", "producto": "panel", "captura": false}, {"id": "181-1862", "nombre": "Nuevo punto", "producto": "panel", "captura": false}, {"id": "182-2048", "nombre": "Editor de contenido · Texto", "producto": "panel", "captura": false}, {"id": "182-2366", "nombre": "Editor de contenido · Audio", "producto": "panel", "captura": false}, {"id": "165-2546", "nombre": "Administradores (lista)", "producto": "panel", "captura": false}, {"id": "179-999", "nombre": "Invitar administrador", "producto": "panel", "captura": false}, {"id": "179-1201", "nombre": "Invitación enviada", "producto": "panel", "captura": false}, {"id": "179-1341", "nombre": "Quitar acceso", "producto": "panel", "captura": false}, {"id": "330-621", "nombre": "Inicio", "producto": "app", "captura": true}, {"id": "311-493", "nombre": "Explorar visitas", "producto": "app", "captura": false}, {"id": "356-976", "nombre": "Explorar · resultados", "producto": "app", "captura": false}, {"id": "356-1011", "nombre": "Explorar · sin resultados", "producto": "app", "captura": false}, {"id": "50-2", "nombre": "Bienvenida", "producto": "app", "captura": false}, {"id": "61-116", "nombre": "Cambiar idioma", "producto": "app", "captura": false}, {"id": "227-905", "nombre": "Portada del lugar", "producto": "app", "captura": false}, {"id": "53-53", "nombre": "Punto de interés · Punto 1 · Castillo de Irurita", "producto": "app", "captura": false}, {"id": "454-5329", "nombre": "Punto 1 · pestaña Textos", "producto": "app", "captura": false}, {"id": "454-5446", "nombre": "Punto 1 · pestaña Vídeos", "producto": "app", "captura": false}, {"id": "516-1056", "nombre": "Punto 1 · pestaña 360º", "producto": "app", "captura": false}, {"id": "516-1101", "nombre": "Punto 1 · pestaña Imágenes", "producto": "app", "captura": false}, {"id": "516-1146", "nombre": "Punto 1 · pestaña Antes y después", "producto": "app", "captura": false}, {"id": "62-573", "nombre": "Punto 2 · Villa medieval de Etxarri Aranatz", "producto": "app", "captura": false}, {"id": "454-5581", "nombre": "Punto 2 · pestaña Textos", "producto": "app", "captura": false}, {"id": "530-1535", "nombre": "Punto 2 · pestaña 360º", "producto": "app", "captura": false}, {"id": "530-1613", "nombre": "Punto 2 · pestaña Vídeos", "producto": "app", "captura": false}, {"id": "530-1691", "nombre": "Punto 2 · pestaña Imágenes", "producto": "app", "captura": false}, {"id": "530-1769", "nombre": "Punto 2 · pestaña Antes y después", "producto": "app", "captura": false}, {"id": "526-1398", "nombre": "Punto 6 · Torre de Leitza", "producto": "app", "captura": false}, {"id": "530-1847", "nombre": "Punto 6 · pestaña Audios", "producto": "app", "captura": false}, {"id": "530-1914", "nombre": "Punto 6 · pestaña 360º", "producto": "app", "captura": false}, {"id": "530-1988", "nombre": "Punto 6 · pestaña Vídeos", "producto": "app", "captura": false}, {"id": "530-2062", "nombre": "Punto 6 · pestaña Imágenes", "producto": "app", "captura": false}, {"id": "530-2136", "nombre": "Punto 6 · pestaña Antes y después", "producto": "app", "captura": false}, {"id": "54-72", "nombre": "Audio · Reproductor", "producto": "app", "captura": false}, {"id": "535-2215", "nombre": "Audio 2", "producto": "app", "captura": false}, {"id": "54-104", "nombre": "Texto 1 de 4", "producto": "app", "captura": false}, {"id": "535-2269", "nombre": "Texto 2 de 4", "producto": "app", "captura": false}, {"id": "535-2284", "nombre": "Texto 3 de 4", "producto": "app", "captura": false}, {"id": "535-2299", "nombre": "Texto 4 de 4", "producto": "app", "captura": false}, {"id": "63-254", "nombre": "Vídeo", "producto": "app", "captura": false}, {"id": "54-140", "nombre": "Antes y después", "producto": "app", "captura": false}, {"id": "454-5288", "nombre": "Antes y después · pantalla completa", "producto": "app", "captura": false}, {"id": "63-289", "nombre": "Vista 360", "producto": "app", "captura": false}, {"id": "63-312", "nombre": "Imagen", "producto": "app", "captura": false}, {"id": "63-339", "nombre": "Fin de la visita", "producto": "app", "captura": false}, {"id": "350-993", "nombre": "Ajustes · con cuenta", "producto": "app", "captura": false}, {"id": "66-397", "nombre": "Sobre la entidad", "producto": "app", "captura": false}, {"id": "309-16968", "nombre": "Entrar con correo", "producto": "app", "captura": false}, {"id": "309-16990", "nombre": "Código de verificación", "producto": "app", "captura": false}]</script>
+<script>
+(function () {
+  var historias = JSON.parse(document.getElementById("datos-historias").textContent);
+  var actividades = JSON.parse(document.getElementById("datos-actividades").textContent);
+  var frames = JSON.parse(document.getElementById("datos-frames").textContent);
+  var framePorId = {}; frames.forEach(function (f) { framePorId[f.id] = f; });
+  var FIGMA = "https://www.figma.com/design/1RBvs1NprjX6oR3P76wE99/CulturApp-%C2%B7-Design-system?node-id=";
+  function rutaCaptura(id) { return "capturas/" + id + ".jpg"; }
+  var BACKBONE = "2026-10-28";
+  var cortes = [
+    { id: 0, nombre: "Walking skeleton", validado: "2026-10-27" },
+    { id: 1, nombre: "Visita completa en castellano" },
+    { id: 2, nombre: "Multiidioma" },
+    { id: 3, nombre: "Entidades y administradores" },
+    { id: 4, nombre: "Descubrimiento y cuenta" },
+    { id: null, nombre: "Sin corte / por decidir" }
+  ];
+  var estado = { producto: "todo", corte: "todos", revisar: false, capturas: true, abierta: null };
+  var tablero = document.getElementById("tablero");
+  var detalle = document.getElementById("detalle");
+  var ultimoFoco = null;
+
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function nombreAct(c) { for (var i = 0; i < actividades.length; i++) if (actividades[i].codigo === c) return actividades[i]; return null; }
+  function claveCorte(c) { return c === null ? "sin" : String(c); }
+
+  var slugs = {}; historias.forEach(function (h) { if (h.caso) slugs[h.caso] = 1; });
+  document.getElementById("cnt-historias").textContent = historias.length;
+  document.getElementById("cnt-actividades").textContent = actividades.length;
+  document.getElementById("cnt-casos").textContent = Object.keys(slugs).length;
+  document.getElementById("cnt-revisar").textContent = historias.filter(function (h) { return h.revisar; }).length;
+
+  function pasa(h) {
+    var a = nombreAct(h.actividad);
+    if (estado.producto !== "todo" && a.producto !== estado.producto) return false;
+    if (estado.corte !== "todos" && claveCorte(h.corte) !== estado.corte) return false;
+    if (estado.revisar && !h.revisar) return false;
+    return true;
+  }
+
+  function render() {
+    tablero.textContent = "";
+    var acts = actividades.filter(function (a) { return estado.producto === "todo" || a.producto === estado.producto; });
+    var filas = cortes.filter(function (c) { return estado.corte === "todos" || claveCorte(c.id) === estado.corte; });
+    tablero.style.gridTemplateColumns = "150px repeat(" + acts.length + ", 230px)";
+    var corner = el("div", "th-corner", "Corte"); corner.style.gridColumn = "1"; tablero.appendChild(corner);
+    var col = 2;
+    ["panel", "app"].forEach(function (p) {
+      var n = acts.filter(function (a) { return a.producto === p; }).length;
+      if (!n) return;
+      var g = el("div", "th-grupo " + p, p === "panel" ? "Panel · administrador" : "App · visitante");
+      g.style.gridColumn = col + " / span " + n; g.style.gridRow = "1"; tablero.appendChild(g); col += n;
+    });
+    acts.forEach(function (a, i) {
+      var t = el("div", "th-act " + a.producto);
+      t.style.gridColumn = String(i + 2); t.style.gridRow = "2";
+      var cod = el("span", "cod", a.codigo); if (BACKBONE) { var ok = el("span", "ok", "\u2713"); ok.title = "Actividad validada el " + BACKBONE; ok.setAttribute("aria-label", "validada"); cod.appendChild(ok); }
+      t.appendChild(cod); t.appendChild(document.createTextNode(a.nombre));
+      tablero.appendChild(t);
+    });
+    var total = 0;
+    filas.forEach(function (c, fi) {
+      var r = fi + 3;
+      var cls = c.id === 0 ? "fila-0" : (fi % 2 ? "fila-b" : "fila-a");
+      var th = el("div", "th-corte " + cls);
+      th.style.gridColumn = "1"; th.style.gridRow = String(r);
+      th.appendChild(el("span", "num", c.id === null ? "?" : String(c.id)));
+      th.appendChild(el("span", "nom", c.nombre));
+      if (c.validado) { var okc = el("span", "ok", "Validado"); okc.title = "Validado el " + c.validado; th.appendChild(okc); }
+      var nFila = 0;
+      acts.forEach(function (a, i) {
+        var cel = el("div", "celda " + cls + " " + a.producto);
+        cel.style.gridColumn = String(i + 2); cel.style.gridRow = String(r);
+        var hs = historias.filter(function (h) { return h.actividad === a.codigo && h.corte === c.id && pasa(h); });
+        hs.forEach(function (h) {
+          var b = el("button", "tarjeta" + (h.revisar ? " revisar" : ""));
+          b.type = "button"; b.setAttribute("data-id", h.id); b.setAttribute("aria-expanded", estado.abierta === h.id ? "true" : "false");
+          if (estado.capturas && h.frames && h.frames.length) {
+            var f0 = framePorId[h.frames[0]];
+            var img = el("img", "mini" + (a.producto === "app" ? " alta" : ""));
+            img.src = rutaCaptura(h.frames[0]); img.alt = f0 ? f0.nombre : h.frames[0]; img.loading = "lazy";
+            img.addEventListener("error", function () { img.hidden = true; });
+            b.appendChild(img);
+          }
+          b.appendChild(el("span", "txt", h.historia));
+          var pie = el("span", "pie");
+          if (h.caso) pie.appendChild(el("span", "slug", h.caso));
+          if (h.revisar) pie.appendChild(el("span", "chip", "Por revisar"));
+          if (pie.childNodes.length) b.appendChild(pie);
+          b.setAttribute("aria-label", a.codigo + ". " + h.historia + (h.revisar ? ". Tiene REVISAR" : ""));
+          cel.appendChild(b);
+        });
+        if (!hs.length) cel.appendChild(el("span", "vacio", "·"));
+        nFila += hs.length; total += hs.length;
+        tablero.appendChild(cel);
+      });
+      th.appendChild(el("span", "n", nFila + (nFila === 1 ? " historia" : " historias")));
+      tablero.appendChild(th);
+    });
+    document.getElementById("resumen-filtro").textContent = "Mostrando " + total + " de " + historias.length + " historias.";
+  }
+
+  function abrir(id, origen) {
+    var h = historias.filter(function (x) { return x.id === id; })[0]; if (!h) return;
+    var a = nombreAct(h.actividad);
+    estado.abierta = id; ultimoFoco = origen || null;
+    document.getElementById("det-id").textContent = h.id + " · " + a.codigo;
+    document.getElementById("det-titulo").textContent = h.historia;
+    document.getElementById("det-actividad").textContent = a.codigo + " · " + a.nombre + " (" + (a.producto === "panel" ? "Panel" : "App") + ")";
+    var cn = cortes.filter(function (c) { return c.id === h.corte; })[0];
+    document.getElementById("det-corte").textContent = h.corte === null ? "Sin corte / por decidir" : "Corte " + h.corte + " · " + cn.nombre;
+    document.getElementById("det-pantallas").textContent = h.pantallas;
+    document.getElementById("det-caso").textContent = h.caso || "Sin caso asignado";
+    var gal = document.getElementById("det-capturas"); gal.textContent = "";
+    if (h.frames && h.frames.length) {
+      h.frames.forEach(function (fid) {
+        var f = framePorId[fid] || { id: fid, nombre: fid };
+        var fig = el("figure");
+        var enlace = el("button", "ampliar"); enlace.type = "button"; enlace.setAttribute("aria-label", "Ampliar " + f.nombre);
+        var img = el("img"); img.src = rutaCaptura(fid); img.alt = f.nombre; img.loading = "lazy";
+        img.addEventListener("error", function () { fig.replaceChild(el("div", "sin", f.nombre + " · sin captura"), enlace); });
+        enlace.addEventListener("click", function () { ampliar(fid, f.nombre, enlace); });
+        enlace.appendChild(img); fig.appendChild(enlace);
+        var cap = el("figcaption"); cap.appendChild(el("span", null, f.nombre));
+        var l2 = el("a", null, "Abrir en Figma"); l2.href = FIGMA + fid; l2.target = "_blank"; l2.rel = "noopener"; cap.appendChild(l2);
+        fig.appendChild(cap); gal.appendChild(fig);
+      });
+    } else {
+      gal.appendChild(el("div", "sin", "Esta historia no tiene pantalla diseñada en Figma."));
+    }
+    var r = document.getElementById("det-revisar"); r.textContent = h.revisar || "Nada pendiente."; r.className = h.revisar ? "aviso" : "";
+    detalle.hidden = false;
+    Array.prototype.forEach.call(tablero.querySelectorAll(".tarjeta"), function (b) { b.setAttribute("aria-expanded", b.getAttribute("data-id") === id ? "true" : "false"); });
+    document.getElementById("det-cerrar").focus();
+  }
+  var visor = document.getElementById("visor"), visorImg = document.getElementById("visor-img"), focoVisor = null;
+  function ampliar(fid, nombre, origen) {
+    focoVisor = origen || null;
+    visorImg.src = rutaCaptura(fid); visorImg.alt = nombre;
+    document.getElementById("visor-nombre").textContent = nombre;
+    document.getElementById("visor-figma").href = FIGMA + fid;
+    visor.classList.remove("real"); document.getElementById("visor-tamano").textContent = "Tamaño real";
+    visor.hidden = false; document.getElementById("visor-cerrar").focus();
+  }
+  function cerrarVisor() {
+    visor.hidden = true; visorImg.src = "";
+    if (focoVisor && document.body.contains(focoVisor)) focoVisor.focus();
+  }
+  document.getElementById("visor-cerrar").addEventListener("click", cerrarVisor);
+  document.getElementById("visor-tamano").addEventListener("click", function () {
+    var real = visor.classList.toggle("real");
+    this.textContent = real ? "Ajustar a la ventana" : "Tamaño real";
+  });
+  visorImg.addEventListener("click", cerrarVisor);
+  visor.addEventListener("click", function (e) { if (e.target === visor) cerrarVisor(); });
+
+  function cerrar() {
+    detalle.hidden = true; estado.abierta = null;
+    Array.prototype.forEach.call(tablero.querySelectorAll(".tarjeta"), function (b) { b.setAttribute("aria-expanded", "false"); });
+    if (ultimoFoco && document.body.contains(ultimoFoco)) ultimoFoco.focus();
+  }
+
+  tablero.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".tarjeta") : null;
+    if (b) abrir(b.getAttribute("data-id"), b);
+  });
+  document.getElementById("det-cerrar").addEventListener("click", cerrar);
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (!visor.hidden) cerrarVisor(); else if (!detalle.hidden) cerrar();
+  });
+
+  var segs = document.querySelectorAll("#f-producto button");
+  Array.prototype.forEach.call(segs, function (b) {
+    b.addEventListener("click", function () {
+      estado.producto = b.getAttribute("data-v");
+      Array.prototype.forEach.call(segs, function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      if (!detalle.hidden) cerrar(); render();
+    });
+  });
+  document.getElementById("f-corte").addEventListener("change", function (e) { estado.corte = e.target.value; if (!detalle.hidden) cerrar(); render(); });
+  document.getElementById("f-revisar").addEventListener("change", function (e) { estado.revisar = e.target.checked; if (!detalle.hidden) cerrar(); render(); });
+  document.getElementById("f-capturas").addEventListener("change", function (e) { estado.capturas = e.target.checked; render(); });
+
+  render();
+})();
+</script>

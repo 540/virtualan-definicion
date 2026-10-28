@@ -13,17 +13,18 @@ Ejecuta todo de forma directa, sin pedir confirmación. El usuario ya sabe lo qu
 
 ## Flujo
 
-1. `git status`. Si no hay cambios, informar y terminar.
-2. `git add` de todos los archivos modificados o nuevos (excepto `.env` o credenciales).
-3. Generar el mensaje de commit en español, descriptivo, con este formato:
+1. Si `estrategia/user-story-mapping.md` o `estrategia/capturas/` tienen cambios (`git status`), regenerar el tablero: `python3 herramientas/generar-tablero.py`. Si falla, parar y mostrar el error: no se commitea un tablero desactualizado.
+2. `git status`. Si no hay cambios, informar y terminar.
+3. `git add` de todos los archivos modificados o nuevos (excepto `.env` o credenciales).
+4. Generar el mensaje de commit en español, descriptivo, con este formato:
    ```
    YYYY-MM-DD HH:MM - [Descripción de qué se hizo]
    ```
    - Fecha con `date +"%Y-%m-%d %H:%M"`.
    - Cuerpo opcional de 2-3 líneas si hace falta. Sin emojis.
    - Usar HEREDOC.
-4. `git commit`.
-5. Mostrar resumen:
+5. `git commit`.
+6. Mostrar resumen:
    ```
    Commit realizado:
      [hash] [mensaje]

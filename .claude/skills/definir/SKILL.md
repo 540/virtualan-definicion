@@ -12,7 +12,7 @@ Paso 2 del flujo. El problema ya está resuelto por el diseño: aquí no hay pro
 ## Carga (silenciosa)
 
 1. Si no dan slug, listar los casos `por-definir` en `casos/` y preguntar cuál.
-2. Leer el caso, `contexto.md` (alcance, decisiones, fase 2) y su parte en `mapa-de-pantallas.md`.
+2. Leer el caso, `contexto.md` (alcance, decisiones, fase 2) y su parte en `diseno/mapa-de-pantallas.md`.
 3. Mirar los frames de Figma del caso (conector de Figma si está; si no, pedir capturas).
 4. Presentar el arranque: título, producto, pantallas, secciones vacías.
 
